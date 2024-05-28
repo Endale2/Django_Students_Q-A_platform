@@ -1,0 +1,434 @@
+{% extends 'base/base.html' %} {% load static %} {% block main_content %}
+<article class="main">
+  <div class="flex justify-between items-center mb-4">
+    <a href="{% url 'questions' %}">
+      <button
+        class="bg-blue-800 text-white rounded-md px-4 py-2 hi=over:bg-blue-900 transition flex"
+      >
+      <svg class="h-6 w-8 py-1.2 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <line x1="19" y1="12" x2="5" y2="12" />  <polyline points="12 19 5 12 12 5" /></svg>
+         Back
+      </button></a
+    >
+    <!-- component -->
+    <button
+      class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
+      onclick="openModal('modal')"
+    >
+      Ask
+    </button>
+
+    <div
+      id="modal"
+      class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 modal"
+    >
+      <div
+        class="relative top-40 mx-auto shadow-xl rounded-md bg-white max-w-md"
+      >
+        <!-- Modal header -->
+        <div
+          class="flex justify-between items-center bg-blue-800 text-white text-xl rounded-t-md px-4 py-2"
+        >
+          <h3>Ask New Question</h3>
+          <button onclick="closeModal('modal')">x</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="p-4">
+          <form id="questionForm" method="post" action="{% url 'questions' %}">
+            {% csrf_token %}
+
+            <div class="mb-4">
+              <label
+                for="question"
+                class="block text-gray-700 text-sm font-bold mb-2"
+                >Question</label
+              >
+              <textarea
+                id="question"
+                name="question"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              ></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="course"
+                class="block text-gray-700 text-sm font-bold mb-2"
+                >Course</label
+              >
+              <select
+                id="course"
+                name="course"
+                class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required
+              >
+                <option value="" disabled selected class="text-gray-400">
+                  Select a course
+                </option>
+                {% for course in courses %}
+                <option
+                  value="{{ course.id }}"
+                  class="text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                >
+                  {{ course.course }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div
+              class="px-4 py-2 border-t border-t-gray-500 flex justify-end items-center space-x-4"
+            >
+              <button
+                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
+                onclick="closeModal('modal')"
+              >
+                Cancel
+              </button>
+              <button
+                class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container mx-auto mt-8 px-4">
+    <!-- Question Section -->
+    <div class="bg-white shadow-lg rounded-lg mb-8 p-6">
+      <div class="flex items-center text-sm text-gray-600 mb-4">
+        <img
+          src="{% if question.user.profile_pic %}{{ question.user.profile_pic.url }}{% else %} {% static 'no_profile_pics/profile.jpg' %}{% endif %}"
+          alt="{{ question.user.first_name }}"
+          class="w-10 h-10 rounded-full mr-3"
+        />
+        <div>
+          <span class="font-semibold text-lg"
+            >{{ question.user.first_name }} {{ question.user.last_name }}</span
+          >
+          <span class="text-gray-500 text-sm ml-1"
+            >- {{ question.date|timesince }} ago</span
+          >
+        </div>
+      </div>
+      <h3 class="text-md  text-gray-800 mb-4">
+        {{ question.question }}
+        
+      </h3>
+      <!-- Course Badge -->
+      <span class=" p-4 inline-block bg-blue-100 text-blue-800 px-3 py-1 text-sm font-semibold rounded-full mr-2 mb-2">{{ question.course }}</span>
+        
+      <div class="flex space-x-4">
+        <form method="post" action="{% url 'question-detail' question.id  %}">
+          {% csrf_token %}
+          <input
+            type="hidden"
+            name="is_saved"
+            value="{% if is_saved %}false{% else %}true{% endif %}"
+          />
+          <button
+            type="submit"
+            class=" flex bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none"
+          >
+           <span class="text-white font-bold">{{num_saved_users}}</span> {% if is_saved %}
+            <svg class="h-5 w-5 "  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg> Saved
+            {% else %}
+            <svg class="h-5 w-5 "  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg> Save
+            {%endif %}
+          </button>
+        </form>
+        {% if question.user == request.user %}
+        <form method="post" action="{% url 'question-detail' question.id  %}">
+          {% csrf_token %}
+          <input type="hidden" name="delete_question" value="{{question.id}}" />
+          <button
+            type="submit"
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none"
+          >
+            Delete
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Answers Section -->
+    <div class="mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-6">Answers</h3>
+      <!-- Loop through answers -->
+      {% for answer in page_obj %}
+      <div class="bg-white shadow-lg rounded-lg mb-6 p-6">
+        <div class="flex items-center mb-4">
+          <img
+            src="{% if answer.user.profile_pic %}{{ answer.user.profile_pic.url }}{% else %} {% static 'no_profile_pics/profile.jpg' %}{% endif %}"
+            alt="{{ answer.user.first_name }}"
+            class="w-10 h-10 rounded-full mr-3"
+          />
+          <div>
+            <span class="font-semibold text-lg text-gray-700"
+              >{{ answer.user.first_name }}</span
+            >
+            <span class="text-gray-500 text-sm ml-1"
+              >- {{ answer.date|timesince }} ago</span
+            >
+          </div>
+        </div>
+        <p class="text-gray-800 text-base mb-4">{{ answer.answer }}</p>
+        <div class="flex justify-between items-center">
+          <!-- Like Button -->
+          <form method="post" action="{% url 'question-detail' question.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="answer_id" value="{{ answer.id }}"/>
+            <input type="hidden" name="is_liked" value="{% if request.user in answer.likes.all %}false{% else %}true{% endif %}"/>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none justify">
+                {% if request.user in answer.likes.all %}
+                <svg class="h-5 w-5 "  viewBox="0 0 24 24"  fill="white"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                
+                
+                {% else %}
+                <svg class="h-5 w-5 "  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>
+                
+                {% endif %}
+                <span class="ml-1">{{ answer.likes.count }}</span>
+            </button>
+        </form>
+
+          <!-- Delete Answer Button -->
+          {% if answer.user == request.user %}
+          <form method="post" action="{% url 'question-detail' question.id %}">
+            {% csrf_token %}
+            <input
+              type="hidden"
+              name="delete_answer_id"
+              value="{{ answer.id }}"
+            />
+            <button
+              type="submit"
+              class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 focus:outline-none"
+            >
+              Delete
+            </button>
+          </form>
+          {% endif %}
+          <!-- Report Answer Button -->
+
+          <!-- Reply Button -->
+          <button
+            class=" hover:text-blue-900 focus:outline-none text-blue-700 "
+            onclick="toggleReplies({{ answer.id }})"
+          >
+            View {{ answer.num_replies }} Replies
+          </button>
+        </div>
+        <!-- Replies Section -->
+        <div id="replies-{{ answer.id }}" class="hidden mt-4 space-y-4">
+          <!-- Loop through replies -->
+          {% for reply in answer.replies.all %}
+          <div class="flex items-start space-x-3">
+            <img
+              src="{% if reply.user.profile_pic %}{{ reply.user.profile_pic.url }}{% else %} {% static 'no_profile_pics/profile.jpg' %}{% endif %}"
+              alt="{{ reply.user.first_name }}"
+              class="w-8 h-8 rounded-full"
+            />
+            <div class="flex-1">
+              <div class="text-gray-700 text-sm">{{ reply.reply }}</div>
+              <div class="text-xs text-gray-500 mt-1">
+                {{ reply.user.first_name }} - {{ reply.date|timesince }} ago
+              </div>
+              <!-- Delete Reply Button -->
+              {% if reply.user == request.user %}
+              <form
+                method="post"
+                action="{% url 'question-detail' question.id %}"
+                class="mt-2"
+              >
+                {% csrf_token %}
+                <input
+                  type="hidden"
+                  name="delete_reply_id"
+                  value="{{ reply.id }}"
+                />
+                <button
+                  type="submit"
+                  class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 focus:outline-none"
+                >
+                  Delete
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+          <!-- Reply Form -->
+          <form
+            method="post"
+            action="{% url 'question-detail' question.id %}"
+            class="mt-4"
+          >
+            {% csrf_token %}
+            <input type="hidden" name="answer_id" value="{{ answer.id }}" />
+            <textarea
+              name="reply"
+              rows="2"
+              class="w-full border rounded-md p-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Write your reply here..."
+            ></textarea>
+            <button
+              type="submit"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none mt-2"
+            >
+              Reply
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Answer Form -->
+    <div class="bg-white shadow-lg rounded-lg mb-8 p-6">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Your Answer</h3>
+      <form
+        method="post"
+        action="{% url 'question-detail' question.id %}"
+        class="space-y-4"
+      >
+        {% csrf_token %}
+        <textarea
+          name="answer"
+          rows="4"
+          class="w-full border rounded-md p-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Write your answer here..."
+        ></textarea>
+        <button
+          type="submit"
+          class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 focus:outline-none"
+        >
+          Submit Answer
+        </button>
+      </form>
+    </div>
+
+    <!-- Pagination for Answers -->
+    <div class="flex justify-center items-center space-x-2">
+      {% if page_obj.has_previous %}
+      <a
+        href="?page=1"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+        >First</a
+      >
+      <a
+        href="?page={{ page_obj.previous_page_number }}"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+        >Previous</a
+      >
+      {% endif %}
+      <span class="px-4 py-2 bg-gray-300 text-gray-800 rounded"
+        >Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span
+      >
+      {% if page_obj.has_next %}
+      <a
+        href="?page={{ page_obj.next_page_number }}"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+        >Next</a
+      >
+      <a
+        href="?page={{ page_obj.paginator.num_pages }}"
+        class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+        >Last</a
+      >
+      {% endif %}
+    </div>
+  </div>
+
+
+</article>
+
+<!-- Aside Section -->
+<aside class="aside aside2 hidden md:block">
+
+  <div class="bg-white p-4 rounded-lg shadow-md">
+    <h1 class="p-2 text-blue-900 font-bold">Related Questions</h1>
+    <!-- Related questions list -->
+    <div class="flex flex-col space-y-2">
+      <!-- Top related question with blue circle -->
+      {% if related_questions %}
+      <a href="{% url 'question-detail' related_questions.0.id %}" class="flex items-center p-3 rounded-lg hover:bg-gray-100 transition duration-300">
+        <!-- Profile picture with blue circle -->
+        <img src="{% if related_questions.0.user.profile_pic %}{{ related_questions.0.user.profile_pic.url }}{% else %} {% static 'no_profile_pics/profile.jpg' %}{% endif %}" alt="{{ related_questions.0.user.first_name }}" class="w-12 h-12 rounded-full border-2 border-blue-500 mr-4">
+        <!-- Question text restricted to 30 characters -->
+        <p class="truncate">{{ related_questions.0.question|slice:":30" }}</p>
+      </a>
+      {% endif %}
+    
+      <!-- Remaining related questions -->
+      {% for related_question in related_questions|slice:"1:" %}
+      <a href="{% url 'question-detail' related_question.id %}" class="flex items-center p-3 rounded-lg hover:bg-gray-100 transition duration-300">
+        <!-- Profile picture -->
+        <img src="{% if related_question.user.profile_pic %}{{ related_question.user.profile_pic.url }}{% else %} {% static 'no_profile_pics/profile.jpg' %}{% endif %}" alt="{{ related_question.user.first_name }}" class="w-12 h-12 rounded-full border border-gray-300 mr-4">
+        <!-- Question text restricted to 30 characters -->
+        <p class="truncate">{{ related_question.question|slice:":30" }}</p>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  
+  
+</aside>
+
+<script>
+
+  function toggleReplies(answerId) {
+    const repliesDiv = document.getElementById(`replies-${answerId}`);
+    repliesDiv.classList.toggle("hidden");
+  }
+
+  function reportContent(type, id) {
+    // Function to handle content reporting
+    alert(`Reported ${type} with ID: ${id}`);
+  }
+  function likeAnswer(answerId) {
+    // Implement your logic to handle like functionality here
+  }
+
+  function toggleReplies(answerId) {
+    var repliesSection = document.getElementById("replies-" + answerId);
+    if (repliesSection.classList.contains("hidden")) {
+      repliesSection.classList.remove("hidden");
+    } else {
+      repliesSection.classList.add("hidden");
+    }
+  }
+
+  window.openModal = function (modalId) {
+    document.getElementById(modalId).style.display = "block";
+    document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+  };
+
+  window.closeModal = function (modalId) {
+    document.getElementById(modalId).style.display = "none";
+    document
+      .getElementsByTagName("body")[0]
+      .classList.remove("overflow-y-hidden");
+  };
+
+  // Close all modals when press ESC
+  document.onkeydown = function (event) {
+    event = event || window.event;
+    if (event.keyCode === 27) {
+      document
+        .getElementsByTagName("body")[0]
+        .classList.remove("overflow-y-hidden");
+      let modals = document.getElementsByClassName("modal");
+      Array.prototype.slice.call(modals).forEach((i) => {
+        i.style.display = "none";
+      });
+    }
+  };
+</script>
+
+{% endblock %}

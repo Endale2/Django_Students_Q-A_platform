@@ -1,0 +1,144 @@
+{% extends 'base/base.html' %}
+
+{% block main_content %}
+<article class="main">
+  <div class="container mx-auto px-4">
+    <h1 class="text-4xl font-bold text-center mb-8 text-gray-900">
+      Search Results for "{{ query }}"
+    </h1>
+    {% if results %}
+    <div class="flex flex-wrap justify-center gap-4">
+      {% for item in results %}
+      <div
+        class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 max-w-xs w-full"
+      >
+        {% with result=item.result class_name=item.class_name %}
+        <div class="p-6">
+          {% if class_name == 'Questions' %}
+          <!-- Question Card -->
+          <div class="px-6 py-4 text-gray-700 flex items-center justify-between border-b border-gray-200">
+            <!-- User Profile -->
+            <div class="flex items-center">
+              <img
+                src="{{ result.user.profile_pic.url }}"
+                alt="Profile Picture"
+                class="h-10 w-10 rounded-full mr-3"
+              />
+              <div>
+                <span class="text-sm font-bold">{{ result.user.first_name }} {{ result.user.last_name }}</span>
+                <br />
+                <span class="text-xs text-gray-500">{{ result.date|timesince }}</span>
+              </div>
+            </div>
+          </div>
+          <!-- Question Body -->
+          <div class="px-6 py-4">
+            <!-- Question Text -->
+            <p class="text-gray-800 text-base mb-4">{{ result.question | truncatechars:150 }}</p>
+            <!-- Badges for Course and Hashtags -->
+            <div class="flex flex-wrap">
+              <!-- Course Badge -->
+              <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 text-sm font-semibold rounded-full mr-2 mb-2">{{ result.course }}</span>
+              <!-- Hashtag Badges -->
+              {% for hashtag in result.hashtags.all %}
+              <a
+                href="{% url 'filtered_questions' hashtag_id=hashtag.id %}"
+                class="inline-block bg-gray-200 text-gray-700 hover:bg-gray-300 px-3 py-1 text-sm font-semibold rounded-full mr-2 mb-2 transition-colors duration-300"
+                >{{ hashtag.name }}</a
+              >
+              {% endfor %}
+            </div>
+          </div>
+          <!-- Footer -->
+          <div class="px-6 py-4 bg-gray-50 flex justify-between items-center">
+            <!-- Number of Answers -->
+            <span class="text-gray-600">
+              {% if result.answers.count == 0 %}
+                No Answers
+              {% elif result.answers.count == 1 %}
+                1 Answer
+              {% else %}
+                {{ result.answers.count }} Answers
+              {% endif %}
+            </span>
+            <!-- Button to Question Detail Page -->
+            <a
+              href="{% url 'question-detail' pk=result.pk %}"
+              class="text-blue-500 hover:text-blue-700 font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              >See More</a
+            >
+          </div>
+          {% elif class_name == 'News' %}
+          <!-- News List Card -->
+          <div class="px-6 py-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ result.title }}</h2>
+            <p class="text-gray-700 text-base">{{ result.content | truncatechars:150 }}</p>
+          </div>
+          <div class="px-6 py-4 flex items-center justify-between border-t">
+            <div class="flex items-center space-x-2">
+              <span class="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                {% if result.comment_count|default:0|add:0 == 0 %} No Comments
+                {% else %} {{ result.comment_count }} Comments {% endif %}
+              </span>
+              <span class="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">#{{ result.date|date:"F d, Y" }}</span>
+            </div>
+            <a
+              href="{% url 'news-detail' result.pk %}"
+              class="text-blue-500 hover:text-blue-700 font-semibold transition duration-150"
+              >Read More</a
+            >
+          </div>
+          {% endif %}
+        </div>
+        {% endwith %}
+      </div>
+      {% endfor %}
+    </div>
+    {% if results.has_other_pages %}
+    <div class="mt-12 flex justify-center">
+      <nav>
+        <ul class="flex">
+          {% if results.has_previous %}
+          <li>
+            <a
+              href="?q={{ query }}&page=1"
+              class="px-4 py-2 bg-blue-800 text-white font-semibold rounded-l-md hover:bg-blue-700 transition-colors duration-300"
+              >First</a
+            >
+          </li>
+          <li>
+            <a
+              href="?q={{ query }}&page={{ results.previous_page_number }}"
+              class="px-4 py-2 bg-blue-800 text-white font-semibold hover:bg-blue-700 transition-colors duration-300"
+              >Previous</a
+            >
+          </li>
+          {% endif %}
+          <li class="px-4 py-2 bg-blue-800 text-white font-semibold">
+            {{ results.number }} / {{ results.paginator.num_pages }}
+          </li>
+          {% if results.has_next %}
+          <li>
+            <a
+              href="?q={{ query }}&page={{ results.next_page_number }}"
+              class="px-4 py-2 bg-blue-800 text-white font-semibold hover:bg-blue-700 transition-colors duration-300"
+              >Next</a
+            >
+          </li>
+          <li>
+            <a
+              href="?q={{ query }}&page={{ results.paginator.num_pages }}"
+              class="px-4 py-2 bg-blue-800 text-white font-semibold rounded-r-md hover:bg-blue-700 transition-colors duration-300"
+              >Last</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %} {% else %}
+    <p class="mt-8 text-lg text-gray-700 text-center">No results found.</p>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}

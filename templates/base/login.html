@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Import Tailwind CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-blue-800">
+    <section class="h-screen flex items-center justify-center">
+        <div class="max-w-md w-full bg-white p-8 rounded-md shadow-lg">
+            <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-6">Login</h2>
+            <form class="space-y-6" method="POST" action="/login">
+                {% csrf_token %}
+                <!-- Phone number input -->
+                <div>
+                    <label for="phone_number" class="sr-only">Phone Number</label>
+                    <input id="phone_number" name="phone_number" type="text" autocomplete="off" required minlength="13" maxlength="13" class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="+251XXXXXXXXXX">
+                    {% if form.errors.phone_number %}
+                    <p class="mt-1 text-sm text-red-500">{{ form.errors.phone_number }}</p>
+                    {% endif %}
+                </div>
+                <!-- Password input -->
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required pattern=".{8,}" title="Password must be at least 8 characters long" class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm" placeholder="Password">
+                    {% if form.errors.password %}
+                    <p class="mt-1 text-sm text-red-500">{{ form.errors.password }}</p>
+                    {% endif %}
+                </div>
+                <!-- Error message display area -->
+                <div>
+                    {% if error_message %}
+                    <p id="error-message" class="text-sm text-red-500">{{ error_message }}</p>
+                    {% endif %}
+                </div>
+                <!-- Submit button -->
+                <div>
+                    <button type="submit" class="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Login</button>
+                </div>
+            </form>
+            <p class="py-2">Don't have an account? <a class="text-blue-600" href="{% url 'registration'%}">Create New Account</a>.</p>
+
+        </div>
+    </section>
+
+    <script>
+        // Prevent autofill and set country code
+        const phoneNumberInput = document.getElementById("phone_number");
+        phoneNumberInput.value = "+251"; // Set country code
+        phoneNumberInput.addEventListener("focus", function() {
+            if (phoneNumberInput.value === "") {
+                phoneNumberInput.value = "+251"; // Re-set country code if empty
+            }
+        });
+        phoneNumberInput.addEventListener("input", function(event) {
+            let inputValue = event.target.value;
+            if (!inputValue.startsWith("+251")) {
+                inputValue = "+251" + inputValue.replace(/\D/g, ''); // Re-set country code if removed
+            } else {
+                inputValue = "+251" + inputValue.slice(4).replace(/\D/g, '').slice(0, 10); // Restrict input to 10 digits after country code
+            }
+            event.target.value = inputValue;
+        });
+    </script>
+</body>
+
+</html>

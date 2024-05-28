@@ -1,0 +1,197 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+
+.wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    text-align: center;
+  
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+  }
+ 
+
+  
+  .wrapper>* {
+   
+    flex: 1 100%;
+  }
+  
+  .header {
+    display: flex;
+    padding:10px;
+  }
+  
+  .footer {
+    
+  }
+  
+  .main {
+    text-align: left;
+    border-radius: 8px;
+    max-height: calc(100vh - 56px);
+    overflow-y: auto;
+    margin:10px;
+    padding:10px;
+  
+   
+  }
+  
+  .aside1 {
+  
+    display: none;
+    margin-left:5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+  
+  .aside2 {
+    border-radius: 8px;
+    padding: 10px;
+  }
+  
+  .drawer-open {
+    display: block !important;
+}
+
+
+.content-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.content-card:hover {
+  transform: translateY(-5px);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.posted-date {
+  font-size: 14px;
+  color: #777;
+}
+
+.question-text {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.course-tags {
+  font-size: 14px;
+}
+
+.save-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+  background-color: #388e3c;
+}
+
+.answer-count {
+  font-size: 14px;
+  color: #777;
+}
+
+
+
+
+
+
+
+
+  @media all and (max-width: 768px) {
+    .aside1 {
+      position: fixed;
+      top:56px /* Header height here */; /* Adjust based on your header height */
+      width: 60%;
+      height:100%; /* Calculate remaining height */
+      z-index:0;
+    }
+  }
+  
+  
+  /* Other media queries (if needed) */
+  @media all and (min-width: 768px) {
+    /* Styles for larger screens */
+    .main {
+      flex: 3;
+    }
+    .aside1 {
+      order: 1;
+      position: relative; /* Reset the position for larger screens */
+      display: block;
+    }
+    .aside2 {
+      order: 2;
+    }
+    .main {
+      order: 2;
+    }
+    .footer {
+      order: 4;
+    }
+  }
+  
+  @media all and (min-width: 600px) {
+    .aside {
+      flex: 1;
+    }
+  }
+
+  
+
+
+
+
+
+
+
+
+  

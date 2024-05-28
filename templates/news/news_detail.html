@@ -1,0 +1,92 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block main_content %}
+<article class="main max-w-4xl mx-auto mt-8 px-4">
+  <!-- News Detail -->
+  <h2 class="text-3xl font-bold mb-4">{{ news.title }}</h2>
+  <p class="text-gray-600 leading-relaxed mb-4">{{ news.content }}</p>
+  
+  <hr class="border-t border-gray-300 my-8">
+  
+  <!-- Add Comment Section -->
+  <div class="max-w-4xl mx-auto px-4 mt-8">
+    <h3 class="text-xl font-semibold mb-4">Add a Comment</h3>
+    <form action="{% url 'news-detail' news.pk %}" method="post" class="flex items-center">
+      {% csrf_token %}
+      <!-- Profile Picture -->
+      <div class="flex-shrink-0 mr-4">
+        {% if user.profile_pic %}
+          <img src="{{ user.profile_pic.url }}" alt="Profile Picture" class="h-10 w-10 rounded-full">
+        {% else %}
+          <img src="{% static 'no_profile_pics/profile.jpg' %}" alt="Profile Picture" class="h-10 w-10 rounded-full">
+        {% endif %}
+      </div>
+      <!-- Textarea -->
+      <textarea name="comment" class="flex-grow border border-gray-300 rounded-md px-4 py-2 mb-4 mr-4" placeholder="Write your comment here..." required></textarea>
+      <!-- Submit Button -->
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+    </form>
+  </div>
+  
+  <!-- Comments Section -->
+  <div class="max-w-4xl mx-auto px-4">
+    <h3 class="text-xl font-semibold mb-4">Comments</h3>
+    <!-- List of Comments -->
+    <div class="space-y-4">
+      {% if news.newscomment_set.all %}
+        {% for comment in news.newscomment_set.all %}
+          <div class="flex items-start space-x-4">
+            <!-- Profile Picture -->
+            <div class="flex-shrink-0">
+              {% if comment.user.profile_pic %}
+                <img src="{{ comment.user.profile_pic.url }}" alt="Profile Picture" class="h-10 w-10 rounded-full">
+              {% else %}
+                <img src="{% static 'no_profile_pics/profile.jpg' %}" alt="Profile Picture" class="h-10 w-10 rounded-full">
+              {% endif %}
+            </div>
+            <!-- Comment Content -->
+            <div class="flex-grow">
+              <div class="bg-gray-100 rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <span class="font-semibold text-gray-800">{{ comment.user.first_name }} {{ comment.user.last_name }}</span>
+                    <!-- Time Since Comment -->
+                    <span class="text-gray-600 ml-2">{{ comment.date|timesince }}</span>
+                  </div>
+                  <!-- Delete Button -->
+                  {% if comment.user == request.user %}
+                    <form action="{% url 'news-detail' news.pk %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                      <button type="submit" class="text-red-500 hover:text-red-700 ml-2">Delete</button>
+                    </form>
+                  {% endif %}
+                </div>
+                <p class="text-gray-700">{{ comment.comment }}</p>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="flex-grow">
+          <div class="bg-gray-100 rounded-lg p-4">
+            <p class="text-gray-700">No comments</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</article>
+
+<aside class="aside aside2 hidden md:block mx-auto">
+  <h2 class="text-lg font-semibold mb-4">News Topics</h2>
+  <ul class="space-y-2">
+    <!-- News Topics -->
+    {% for news in news_list %}
+      <li>
+        <a href="{% url 'news-detail' news.pk %}" class="text-blue-600 hover:text-blue-800 font-bold truncate">{{ news.title|truncatechars:32 }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</aside>
+{% endblock %}

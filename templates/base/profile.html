@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block main_content %}
+    <article class="main bg-blue-800 text-white rounded-lg p-8">
+        <div class="p-8">
+        <h1 class="text-3xl font-bold mb-8">Welcome, {{ user.get_full_name }}</h1>
+        <div class="flex flex-col md:flex-row items-center mb-8">
+            <div class="w-32 h-32 rounded-full overflow-hidden mr-4 border-4 border-blue-500">
+              <img  src="{% if user.profile_pic %}{{ user.profile_pic.url }}{% else %} {% static 'no_profile_pics/profile.jpg' %}{% endif %}"
+            alt="{{ question.user.first_name }}"  class="w-full h-full object-cover">
+            </div>
+            <div>
+                <p class="mb-2"><strong class="text-gray-300">Phone Number:</strong> {{ user.phone_number }}</p>
+                <p class="mb-2"><strong class="text-gray-300">Status:</strong> {{ user.get_status_display }}</p>
+                <p class="mb-2"><strong class="text-gray-300">Department:</strong> {{ user.department }}</p>
+            </div>
+        </div>
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Edit Profile</h2>
+            <form method="post" enctype="multipart/form-data" class="max-w-md">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="first_name" class="block text-gray-300 mb-2">First Name:</label>
+                    <input type="text" name="first_name" id="first_name" value="{{ user.first_name }}" class="input-field bg-blue-900 text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="last_name" class="block text-gray-300 mb-2">Last Name:</label>
+                    <input type="text" name="last_name" id="last_name" value="{{ user.last_name }}" class="input-field bg-blue-900 text-white">
+                </div>
+                <div class="mb-4">
+                    <label for="department" class="block text-gray-300 mb-2">Department:</label>
+                    <select name="department" id="department" class="input-field bg-blue-900 text-white">
+                        {% for department in departments %}
+                            <option value="{{ department.id }}" {% if user.department == department.id %} selected {% endif %}>{{ department.department }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="profile_pic" class="block text-gray-300 mb-2">Change Profile Picture:</label>
+                    <input type="file" name="profile_pic" id="profile_pic" class="border-none">
+                </div>
+                <button type="submit" class="inline-block bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Save Changes</button>
+
+            </form>
+        </div>
+    </div>
+    </article>
+{% endblock %}

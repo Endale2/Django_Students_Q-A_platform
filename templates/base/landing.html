@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha.ET</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header -->
+    <header class="py-8 bg-blue-900">
+        <div class="container mx-auto flex flex-col items-center">
+            <h1 class="text-4xl font-bold text-white mb-4">Welcome to Alpha.ET</h1>
+            <p class="text-lg text-blue-200 mb-6">The premier Q&A and news platform for Ethiopian students</p>
+            <div class="flex space-x-4">
+                <a href="{% url 'login' %}" class="bg-white text-blue-900 hover:bg-gray-200 py-2 px-4 rounded-lg text-lg font-semibold">Login</a>
+                <a href="{% url 'registration' %}" class="bg-white text-blue-900 hover:bg-gray-200 py-2 px-4 rounded-lg text-lg font-semibold">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section class="py-12">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-8 text-blue-900">Discover Our Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Ask Questions</h3>
+                        <p class="text-gray-700">Ask any question and get answers from other students and experts based on your department.</p>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Answer Questions</h3>
+                        <p class="text-gray-700">Share your knowledge by answering questions from fellow students.</p>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Latest Updates</h3>
+                        <p class="text-gray-700">Stay informed with the latest news, updates, internships, and scholarships in the education sector.</p>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Save Questions</h3>
+                        <p class="text-gray-700">Save important questions for future reference and track the discussion under each answer.</p>
+                    </div>
+                </div>
+                <!-- Card 5 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Department-Based Content</h3>
+                        <p class="text-gray-700">Access tailored content based on your specific department and field of study.</p>
+                    </div>
+                </div>
+                <!-- Card 6 -->
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-4 text-blue-900">Discuss Answers</h3>
+                        <p class="text-gray-700">Engage in meaningful discussions under each answer to better understand the solutions provided.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-blue-900 text-center">
+        <div class="container mx-auto">
+            <p class="text-white">© 2024 Alpha.ET. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

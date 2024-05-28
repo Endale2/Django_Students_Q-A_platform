@@ -1,0 +1,65 @@
+{% extends 'base/base.html' %}
+
+{% block main_content %}
+<article class="main">
+<div class="container  px-4 py-8">
+  <div class="flex flex-col lg:flex-row lg:space-x-8">
+    <!-- Main Content -->
+    <div class="flex-1">
+      <article class="space-y-6">
+        {% for news_item in news %}
+        <!-- News List Card -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div class="px-6 py-4">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ news_item.title }}</h2>
+            <p class="text-gray-700 text-base">{{ news_item.content | truncatechars:150 }}</p>
+          </div>
+          <div class="px-6 py-4 flex items-center justify-between border-t">
+            <div class="flex items-center space-x-2">
+              <span class="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                {% if news_item.comment_count|default:0|add:0 == 0 %}
+                No Comments
+                {% else %}
+                {{ news_item.comment_count }} Comments
+                {% endif %}
+              </span>
+              <span class="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                #{{ news_item.date|date:"F d, Y" }}
+              </span>
+            </div>
+            <a href="{% url 'news-detail' news_item.pk %}" class="text-blue-500 hover:text-blue-700 font-semibold transition duration-150">Read More</a>
+          </div>
+        </div>
+        {% endfor %}
+      </article>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class=" aside2 hidden lg:block w-full lg:w-64">
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">News Topics</h2>
+        <ul class="space-y-3">
+          <!-- Example News Topics -->
+          <li>
+            <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Technology</a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Science</a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Politics</a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Health</a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-600 hover:text-blue-800 transition duration-150">Entertainment</a>
+          </li>
+          <!-- Add more news topics as needed -->
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+</article>
+{% endblock %}

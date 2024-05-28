@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block main_content %}
+<article class="main">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-4">Saved Questions</h1>
+    {% if questions %}
+    {% for question in questions %}
+    <!-- Question Card -->
+    <div class="bg-white rounded-lg overflow-hidden mx-auto max-w-xl mb-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+      <!-- Question Header -->
+      <div class="px-6 py-4 text-gray-700 flex items-center justify-between border-b border-gray-200">
+        <!-- User Profile -->
+        <div class="flex items-center">
+          <img src="{% if question.question.user.profile_pic %}{{ question.question.user.profile_pic.url }}{% else %}{% static 'no_profile_pics/profile.jpg' %}{% endif %}" alt="Profile Picture" class="h-10 w-10 rounded-full mr-3" />
+          <div>
+            <span class="text-sm font-bold">{{ question.question.user.first_name }} {{ question.question.user.last_name }}</span>
+            <br>
+            <span class="text-xs text-gray-500">{{ question.date|timesince }}</span>
+          </div>
+        </div>
+      </div>
+      <!-- Question Body -->
+      <div class="px-6 py-4">
+        <!-- Question Text -->
+        <p class="text-gray-800 text-base mb-4">
+          {{ question.question | truncatechars:150 }}
+        </p>
+        <!-- Badges for Course and Hashtags -->
+        <div class="flex flex-wrap">
+          <!-- Course Badge -->
+          <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 text-sm font-semibold rounded-full mr-2 mb-2">{{ question.question.course }}</span>
+          <!-- Hashtag Badges -->
+          {% for hashtag in question.hashtags.all %}
+          <a href="{% url 'filtered_questions' hashtag_id=hashtag.id %}" class="inline-block bg-gray-200 text-gray-700 hover:bg-gray-300 px-3 py-1 text-sm font-semibold rounded-full mr-2 mb-2 transition-colors duration-300">{{ hashtag.name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- Footer -->
+      <div class="px-6 py-4 bg-gray-50 flex justify-between items-center">
+        <!-- Number of Answers -->
+        <span class="text-gray-600">
+          {% if question.question.answers.count == 0 %}
+            No Answers
+          {% elif question.question.answers.count == 1 %}
+            1 Answer
+          {% else %}
+            {{ question.question.answers.count }} Answers
+          {% endif %}
+        </span>
+        <!-- Button to Question Detail Page -->
+        <a href="{% url 'question-detail' question.question.id %}" class="text-blue-500 hover:text-blue-700 font-semibold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline transition duration-300 ease-in-out">See More</a>
+    </div>
+    </div>
+    {% endfor %}
+    <!--Pagination-->
+    <div class="flex justify-center mt-8 space-x-4">
+      {% if page_obj.has_previous %}
+      <a href="?page=1" class="px-4 py-2 bg-blue-800 hover:bg-blue-600 text-white font-bold rounded-full focus:outline-none focus:shadow-outline">First</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-blue-800 hover:bg-blue-600 text-white font-bold rounded-full focus:outline-none focus:shadow-outline">Previous</a>
+      {% endif %}
+    
+      <span class="text-gray-600">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-blue-800 hover:bg-blue-600 text-white font-bold rounded-full focus:outline-none focus:shadow-outline">Next</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}" class="px-4 py-2 bg-blue-800 hover:bg-blue-600 text-white font-bold rounded-full focus:outline-none focus:shadow-outline">Last</a>
+      {% endif %}
+    </div>
+    
+
+  {% else %}
+  <p class="text-gray-700">You have no saved questions.</p>
+  {% endif %}
+</div>
+</article>
+<aside class="aside aside2 hidden md:block">
+
+  <!-- Questions Card -->
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <!-- Card Header -->
+    <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white text-center py-4">
+        <h2 class="text-xl font-semibold">My Questions</h2>
+    </div>
+    <!-- Card Content -->
+    <div class="p-4">
+        <ul class="space-y-3">
+          {% for question in my_questions %}
+            <li class="bg-gray-100 p-3 rounded-lg shadow-sm">
+                <a href="{% url 'question-detail' question.id %}" class="text-blue-800 hover:underline">{{question.question|truncatechars:30}}</a>
+            </li>
+          {%endfor%}
+           
+        </ul>
+    </div>
+    <!-- Card Footer -->
+    <div class="bg-gray-50 text-center p-4">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            See More
+        </button>
+    </div>
+</div>
+
+</aside>
+{% endblock %}

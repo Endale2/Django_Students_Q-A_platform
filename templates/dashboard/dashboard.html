@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Alpha.ET</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Sidebar -->
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-blue-900 text-white">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold">Alpha.ET Dashboard</h2>
+                <nav class="mt-6">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-800">Home</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-800">Users</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-800">Revenue</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-800">Q&A</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-800">Admins</a>
+                        </li>
+                        <li>
+                            <a href="#" class="block py-2 px-4 rounded hover:bg-blue-800">Settings</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="flex-1 p-10">
+            <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+
+            <!-- Highlights -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Users Highlight -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-blue-900 mb-4">Users</h2>
+                    <p class="text-gray-700 text-lg">Total Users: <span id="total-users" class="font-bold">{{ total_users }}</span></p>
+                    <p class="text-gray-700 text-lg">Premium Users: <span id="premium-users" class="font-bold">{{ premium_users }}</span></p>
+                    <p class="text-gray-700 text-lg">Freemium Users: <span id="freemium-users" class="font-bold">{{ freemium_users }}</span></p>
+                </div>
+
+                <!-- Revenue Highlight -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-blue-900 mb-4">Revenue</h2>
+                    <p class="text-gray-700 text-lg">Total Revenue: <span id="total-revenue" class="font-bold">${{ total_revenue }}</span></p>
+                    <p class="text-gray-700 text-lg">This Month: <span id="monthly-revenue" class="font-bold">${{ monthly_revenue }}</span></p>
+                </div>
+
+                <!-- Q&A Highlight -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-2xl font-bold text-blue-900 mb-4">Q&A</h2>
+                    <p class="text-gray-700 text-lg">Total Questions: <span id="total-questions" class="font-bold">{{ total_questions }}</span></p>
+                    <p class="text-gray-700 text-lg">Total Answers: <span id="total-answers" class="font-bold">{{ total_answers }}</span></p>
+                </div>
+            </div>
+
+            <!-- Additional content -->
+            <div class="mt-10">
+                <h2 class="text-2xl font-bold text-blue-900 mb-6">Recent Activities</h2>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <ul class="space-y-4">
+                        {% for activity in recent_activities %}
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">{{ activity.activity }}</span>
+                            <span class="text-sm text-gray-500">{{ activity.time }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>
